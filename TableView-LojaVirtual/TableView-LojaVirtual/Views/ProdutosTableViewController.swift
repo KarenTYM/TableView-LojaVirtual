@@ -7,6 +7,8 @@
 
 import UIKit
 
+// Classe criada só pra explicar sobre TableViewController estática -> Geralmente não se usa TableView estática
+
 class ProdutosTableViewController: UITableViewController {
 
     override func viewDidLoad() {
