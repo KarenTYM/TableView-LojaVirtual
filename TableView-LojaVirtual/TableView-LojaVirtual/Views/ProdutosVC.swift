@@ -25,7 +25,7 @@ class ProdutosVC: UIViewController {
                               Produto(nome:"Bola de futebol", preco:"R$ 99,00", categoaria: .lazer),
                               Produto(nome:"Macbook", preco:"R$ 10.000,00", categoaria: .eletronicos),
                               Produto(nome: "Geladeira", preco: "R$ 5.000,00", categoaria: .eletrodomesticos),
-                              Produto(nome: "TV", preco:"R$ 5.000,00", categoaria: .eletrodomesticos),
+                              Produto(nome: "TV", preco:"R$ 5.500,00", categoaria: .eletrodomesticos),
                               Produto(nome: "Fogão", preco:"R$ 2.000,00", categoaria: .eletrodomesticos)]
     
     
@@ -38,6 +38,13 @@ class ProdutosVC: UIViewController {
         produtosTableView.delegate = self
         // limpa células em branco
         self.produtosTableView.tableFooterView = UIView(frame: .zero)
+        
+        // Configuração criada para poder usar a Xib (TableViewCell)
+        // registrando a Celula (Xib) pra poder usar dentro de uma TableView
+        // UINib = inicializa o arquivo do xib da célula
+        // nibName = nome do aquivo
+        // forCellReusseIdentifier = identifier da celula
+        self.produtosTableView.register(UINib(nibName: "ProdutoTableViewCell", bundle: nil), forCellReuseIdentifier: "ProdutoTableViewCell")
     }
     
     
@@ -50,6 +57,9 @@ class ProdutosVC: UIViewController {
         
     }
 
+    
+    // MARK: Definindo número de cálulas por seção
+    
     // método que me fala quantas células vai ter em cada seção
     private func numeroDeItensPorCategoria(section:Int) -> Int {
         
@@ -74,6 +84,8 @@ class ProdutosVC: UIViewController {
 //        }
     }
     
+    
+    // MARK: carregando os itens para cada categoria
     
     // vai ser chamada em cellForRowAt
     func loadArrayFiltrado(section:Int) -> [Produto] {
@@ -110,8 +122,11 @@ extension ProdutosVC: UITableViewDataSource {
     // método essencial para estar em conformidade com o protocolo UITableViewDataSource
     // Que tipo de célula eu espero dentro dos índex
     // metodo é disparado a quantidade de células que tem em cada seção
+    // _ tableView = tableView que dispara o método
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = produtosTableView.dequeueReusableCell(withIdentifier: "ProdutosCell", for: indexPath)
+        
+        // variável não usa mais porque vamos usar o xib
+//        let cell = produtosTableView.dequeueReusableCell(withIdentifier: "ProdutosCell", for: indexPath)
         
         // FORMA 1 --> fazer a separação dos produtos por categoria
 //        var arrayProdutosFiltados:[Produto] = []
@@ -126,11 +141,25 @@ extension ProdutosVC: UITableViewDataSource {
         
         // Montagem da célula
         // Título = nome do produto  -  Subtítulo = preço do produto
-        cell.textLabel?.text = arrayProtudosFiltrados[indexPath.row].nome
-        cell.detailTextLabel?.text = arrayProtudosFiltrados[indexPath.row].preco
+        // variável não usa mais porque vamos usar o xib
+//        cell.textLabel?.text = arrayProtudosFiltrados[indexPath.row].nome
+//        cell.detailTextLabel?.text = arrayProtudosFiltrados[indexPath.row].preco
+//
+        // variável não usa mais porque vamos usar o xib
+//        print(indexPath.row)
+//        return cell
         
-        print(indexPath.row)
-        return cell
+        
+        // crio a variável para colocar ela na tableView
+        // crio a variavel cell pra eu carregar a celula dentro da tableView
+        // poderia ter colocado: ... = tableView.dequeueReusableCell(...)...
+        let cell:ProdutoTableViewCell? = self.produtosTableView.dequeueReusableCell(withIdentifier: "ProdutoTableViewCell", for: indexPath) as? ProdutoTableViewCell
+        // as? ProdutoTableViewCell --> transoforma o retorno no tipo ProdutoTableViewCell, porque o método retorna UITableViewCell e embora o ProdutoTableViewCell seja uma filha UITableViewCell, não as mesmas
+        
+        cell?.setup(produto: arrayProtudosFiltrados[indexPath.row])
+        
+        // faço um ternário para evitar que o app quebre se a célula não tiver nada -> nesse caso, retorna uma TableView vazia
+        return cell ?? UITableViewCell()
     }
     
     
@@ -142,6 +171,8 @@ extension ProdutosVC: UITableViewDataSource {
 }
 
 
+
+// MARK: extension -> Delegate
 
 extension ProdutosVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
