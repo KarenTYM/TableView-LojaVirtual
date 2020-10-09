@@ -34,10 +34,22 @@ class ProdutoTableViewCell: UITableViewCell {
         self.tituloLabel.text = _produto.nome
         self.subtituloLabel.text = _produto.preco
         
-        self.imageProduto.image = UIImage(named: "")
+        self.imageProduto.image = self.loadImagem(categoria: _produto.categoaria)
         
     }
     
+    
+    private func loadImagem(categoria:Categorias) -> UIImage? {
+        // Imagem pode estar em jpeg ou em png
+        switch categoria {
+        case .lazer:
+            return UIImage(named: "lazer.jpeg")  // se for em jpeg tem que colocar a extensão
+        case .eletrodomesticos:
+            return UIImage(named: "eletrodomesticos")  // se for em png não precisa colocar a extensão
+        case .eletronicos:
+            return UIImage(named: "eletronicos.jpeg")
+        }
+    }
     
     // MARK: awakeFromNib
     
